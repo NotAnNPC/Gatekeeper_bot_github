@@ -1,18 +1,14 @@
+//Stuff that makes the things work
 const fs = require('fs');
 const Discord = require('discord.js');
+//Reference config.json for values
 const { prefix, token } = require('./config.json');
 const cooldowns = new Discord.Collection();
-
-
-
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
-
-
-
-
+//retrieve all the command files from the Commands folder
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
+//take name of
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
@@ -25,9 +21,11 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
+  //if the message doesn't have the prifix or was sent by a bot, exit early
   if (!message.content.startsWith(prefix) || message.author.bot) return;
-
+  //slice prefix and split into array
   const args = message.content.slice(prefix.length).split(/ +/);
+  //Create command variabe for first element in array
   const commandName = args.shift().toLowerCase();
 
   if (!client.commands.has(commandName)) return;
